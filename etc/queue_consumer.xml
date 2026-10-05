@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+    Batch consumer: messages are merged (deduplicated by customer) by Model\Queue\Merger
+    and handed to the handler as one list, which is pushed to Zoho in bulk upserts.
+
+    Run manually:  bin/magento queue:consumers:start zohoCustomerSync
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
+    <consumer name="zohoCustomerSync"
+              queue="zoho.customer.sync"
+              consumerInstance="Contact\ZohoCRM\Model\Queue\Consumer"
+              handler="Contact\ZohoCRM\Model\Queue\CustomerSyncHandler::execute"
+              maxMessages="1000"
+              onlySpawnWhenMessageAvailable="true"/>
+</config>

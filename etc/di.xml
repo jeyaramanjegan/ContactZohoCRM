@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Plugin for Customer Save -->
+    <type name="Magento\Customer\Model\Customer">
+        <plugin name="contact_zohocrm_customer_sync"
+                type="Contact\ZohoCRM\Plugin\CustomerSync"
+                sortOrder="10"/>
+    </type>
+
+    <!-- Separate Curl instances: Curl keeps user options between calls, so sharing one
+         between auth and API calls leaks token-request POST options into API requests -->
+    <type name="Contact\ZohoCRM\Model\Api\ZohoAuth">
+        <arguments>
+            <argument name="curl" xsi:type="object" shared="false">Magento\Framework\HTTP\Client\Curl</argument>
+        </arguments>
+    </type>
+    <type name="Contact\ZohoCRM\Model\Api\ZohoClient">
+        <arguments>
+            <argument name="curl" xsi:type="object" shared="false">Magento\Framework\HTTP\Client\Curl</argument>
+        </arguments>
+    </type>
+
+    <!-- CLI: bin/magento zoho:customers:sync -->
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="contact_zohocrm_sync_customers" xsi:type="object">Contact\ZohoCRM\Console\Command\SyncCustomers</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Message queue: zoho.customer.sync batch consumer -->
+    <type name="Magento\Framework\MessageQueue\MergerFactory">
+        <arguments>
+            <argument name="mergers" xsi:type="array">
+                <item name="zohoCustomerSync" xsi:type="string">Contact\ZohoCRM\Model\Queue\Merger</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Contact\ZohoCRM\Model\Queue\Consumer">
+        <arguments>
+            <!-- Messages dequeued and merged per handler call; one Zoho upsert per 100 -->
+            <argument name="batchSize" xsi:type="number">100</argument>
+        </arguments>
+    </type>
+
+    <!-- Logger Configuration -->
+    <type name="Contact\ZohoCRM\Logger\Handler">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/contact_zohocrm.log</argument>
+        </arguments>
+    </type>
+
+    <type name="Contact\ZohoCRM\Logger\Logger">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Contact\ZohoCRM\Logger\Handler</item>
+            </argument>
+            <argument name="name" xsi:type="string">contact_zohocrm</argument>
+        </arguments>
+    </type>
+
+</config>

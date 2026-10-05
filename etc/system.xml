@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/system_file.xsd">
+    <system>
+        <tab id="contact" translate="label" sortOrder="10">
+            <label>Contact Integration</label>
+        </tab>
+
+        <section id="contact_zohocrm" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Zoho CRM Integration</label>
+            <tab>contact</tab>
+            <resource>Contact_ZohoCRM::config</resource>
+
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Integration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Enable Zoho CRM integration for customer contact sync]]></comment>
+                </field>
+
+                <field id="api_domain" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>API Domain</label>
+                    <source_model>Contact\ZohoCRM\Model\Config\Source\ApiDomains</source_model>
+                    <comment><![CDATA[Select your Zoho data center region]]></comment>
+                </field>
+
+                <field id="api_version" translate="label" type="text" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>API Version</label>
+                    <comment>Zoho CRM API version (default: v2)</comment>
+                </field>
+
+                <field id="client_id" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>OAuth Client ID</label>
+                    <backend_model>Contact\ZohoCRM\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[Get from Zoho Developer Console]]></comment>
+                </field>
+
+                <field id="client_secret" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>OAuth Client Secret</label>
+                    <backend_model>Contact\ZohoCRM\Model\Config\Backend\Encrypted</backend_model>
+                    <comment><![CDATA[Get from Zoho Developer Console]]></comment>
+                </field>
+
+                <field id="redirect_uri" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Redirect URI</label>
+                    <comment><![CDATA[Must match exactly with Zoho app configuration]]></comment>
+                </field>
+
+                <field id="module_name" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Zoho Module</label>
+                    <source_model>Contact\ZohoCRM\Model\Config\Source\ZohoModules</source_model>
+                    <comment>Select which Zoho module to sync contacts to</comment>
+                </field>
+
+                <field id="oauth_button" translate="label" type="button" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>OAuth Authentication</label>
+                    <button_url>https://accounts.zoho.com/oauth/v2/auth</button_url>
+                    <comment>Click to authenticate with Zoho</comment>
+                </field>
+
+                <field id="sync_on_register" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync on Customer Registration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="sync_on_update" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync on Customer Update</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="sync_on_login" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync on Customer Login</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Synchronize customer data on each login</comment>
+                </field>
+
+                <field id="log_enabled" translate="label" type="select" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="log_level" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Log Level</label>
+                    <source_model>Contact\ZohoCRM\Model\Config\Source\LogLevel</source_model>
+                    <depends>
+                        <field id="log_enabled">1</field>
+                    </depends>
+                </field>
+
+                <field id="retry_attempts" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retry Attempts</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>Number of retry attempts on failed API calls</comment>
+                </field>
+
+                <field id="retry_delay" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Retry Delay (seconds)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>Delay between retry attempts</comment>
+                </field>
+            </group>
+
+            <group id="field_mapping" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Field Mapping</label>
+                <comment><![CDATA[Map Magento customer fields to Zoho CRM fields]]></comment>
+
+                <field id="firstname" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>First Name</label>
+                    <comment>Zoho CRM field name for First Name</comment>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="lastname" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Last Name</label>
+                    <comment>Zoho CRM field name for Last Name</comment>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="email" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Email</label>
+                    <comment>Zoho CRM field name for Email</comment>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="telephone" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Phone</label>
+                    <comment>Zoho CRM field name for Phone</comment>
+                </field>
+
+                <field id="dob" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Date of Birth</label>
+                    <comment>Zoho CRM field name for Date of Birth</comment>
+                </field>
+
+                <field id="gender" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Gender</label>
+                    <comment>Zoho CRM field name for Gender</comment>
+                </field>
+
+                <field id="taxvat" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Tax/VAT</label>
+                    <comment>Zoho CRM field name for Tax/VAT</comment>
+                </field>
+
+                <field id="company" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Company</label>
+                    <comment>Zoho CRM field name for Company</comment>
+                </field>
+            </group>
+
+            <group id="address_mapping" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Address Mapping</label>
+                <comment><![CDATA[Map Magento address fields to Zoho CRM fields]]></comment>
+
+                <field id="street" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Street Address</label>
+                    <comment>Zoho CRM field name for Street</comment>
+                </field>
+
+                <field id="city" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>City</label>
+                    <comment>Zoho CRM field name for City</comment>
+                </field>
+
+                <field id="region" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>State/Region</label>
+                    <comment>Zoho CRM field name for State</comment>
+                </field>
+
+                <field id="country_id" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Country</label>
+                    <comment>Zoho CRM field name for Country</comment>
+                </field>
+
+                <field id="postcode" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Zip/Postal Code</label>
+                    <comment>Zoho CRM field name for Zip Code</comment>
+                </field>
+            </group>
+
+            <group id="advanced" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Advanced Settings</label>
+
+                <field id="batch_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Batch Size</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>Customers per Zoho bulk upsert call from the queue consumer (max 100)</comment>
+                </field>
+
+                <field id="queue_enabled" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Async Sync (Message Queue)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Yes: customer saves are published to zoho.customer.sync and pushed to Zoho in bulk by the zohoCustomerSync consumer. No: sync in real time during save.</comment>
+                </field>
+
+                <field id="webhook_enabled" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Webhooks</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable real-time webhook notifications</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

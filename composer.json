@@ -1,0 +1,28 @@
+{
+    "name": "contact/zoho-crm",
+    "description": "Magento 2 Zoho CRM Integration for Customer Contact Sync",
+    "type": "magento2-module",
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "jegan Jeyaraman",
+            "email": "jeganjeyaraman.yt@gmail.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Contact\\ZohoCRM\\": ""
+        }
+    },
+    "require": {
+        "php": "~7.4|~8.1|~8.2",
+        "magento/framework": "^103.0|^104.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "magento/module-customer": "^103.0",
+        "magento/module-config": "^101.0"
+    }
+}
